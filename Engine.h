@@ -12,7 +12,7 @@
 #include <cstdio>
 
 
-#include "Ship.h"
+#include "Enemy.h"
 #include "Projectile.h"
 using namespace sf;
 using namespace std;
@@ -22,18 +22,20 @@ class Engine
 {
 public:
 	vector<Projectile> projectileList;
-	vector<Ship> enemyShip;
+	vector<Enemy> enemyShip;
 	Ship player;
 
 	Engine();
 	void run();
+	bool canSpawn(int lastTick, int Tick);
 	void spawnProjectile(Ship &ship);
-
+	void spawnEnemy();
 	sf::Clock clock;
 	sf::Font arial;
 
 	int tick;
 	int lastShootTick;
+	int lastSpawnTick;
 	double dt;
 private:
 	sf::RenderWindow window;
