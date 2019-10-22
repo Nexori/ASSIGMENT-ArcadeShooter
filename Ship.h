@@ -15,8 +15,11 @@ public:
 	sf::Texture playerSprite;
 	sf::CircleShape shape;
 		//Variables
+	float fireRate;
 	float hp;
+	float damage;
 		//Methods
+	bool canShoot(int lastTick, int Tick);
 	void update(float dt);
 	void draw(sf::RenderWindow& window);
 };
