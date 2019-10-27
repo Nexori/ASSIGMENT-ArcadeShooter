@@ -7,9 +7,10 @@ Engine::Engine() : window(sf::VideoMode(WINX,WINY),"Arcade Space Game")
 	this->dt = 0;
 	arial.loadFromFile("arial.ttf");
 	this->tick = 0;
-	this->lastShootTick = 0;
+	this->lastAnimationTick = 0;
 	this->lastSpawnTick = 0;
-	player.shape.setOrigin(player.shape.getRadius(), player.shape.getRadius());
+	player.shape.setOrigin(40, 20);
+	animation.textureAtlas.loadFromFile("textures.png");
 }
 
 void Engine::run()
@@ -23,6 +24,7 @@ void Engine::run()
 		tick++;
 	}
 }
+
 void Engine::spawnEnemy() {
 	if (enemyShip.size() < 50 && canSpawn(lastSpawnTick, tick) == true) {
 		enemyShip.push_back(Enemy());
@@ -32,14 +34,12 @@ void Engine::spawnEnemy() {
 	else if (enemyShip.size() > 50) cout << "\n[DEBUG]Too many enemies";
 	else cout << "\n[DEBUG]Spawning cooldown";
 }
-void Engine::spawnProjectile(Ship& ship)
-{
-	if (ship.canShoot(lastShootTick, tick) == true) {
-		projectileList.push_back(Projectile(ship.position, ship.speedVec, ship.damage));
-		cout << "\n[DEBUG]Projectile vec size: " << projectileList.size() << endl;
-		lastShootTick = tick;
+
+void Engine::shootProjectile(Ship& ship) {
+	if (ship.canShoot(ship.lastShootTick, tick)) 
+	{
+	ship.spawnProjectile(ship, tick, sf::Vector2f(0, 10), sf::Vector2f(0,-10), false, projectileList);
 	}
-	else cout << "\n[DEBUG] Can't shoot, cooldown";
 }
 
 void Engine::processEvents()
@@ -62,7 +62,7 @@ void Engine::processEvents()
 		projectileList.clear();
 	}
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space)) {
-		spawnProjectile(player);
+		shootProjectile(player);
 	}
 	//remove later
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::C)) {
@@ -81,6 +81,7 @@ void Engine::processEvents()
 
 void Engine::update(float dt)
 {
+	animation.update(dt, player , enemyShip, projectileList);
 	player.update(dt);
 	for (int i = 0; i < projectileList.size(); i++) {
 		projectileList[i].updateProjectile(dt);
@@ -120,7 +121,7 @@ void Engine::update(float dt)
 void Engine::render()
 {
 	std::ostringstream test;
-	test << "FPS:\n" << 1 / dt << "\nSpeedvec:\n" << player.speedVec.x << "  |  " << player.speedVec.y << "\nPlayerPos:\n" << player.position.x << "  |  " << player.position.y << "\n dTick " << tick - lastShootTick << "\nCanShoot: " << player.canShoot(lastShootTick, tick) << "\nCanSpawn: " << canSpawn(lastSpawnTick, tick);
+	test << "FPS: " << 1 / dt << "\nSpeedvec:" << player.speedVec.x << "  |  " << player.speedVec.y << "\nPlayerPos:" << player.position.x << "  |  " << player.position.y << "\nCanSpawn: " << canSpawn(lastSpawnTick, tick) << "\nBullet cnt.: " << projectileList.size();
 	sf::String temp(test.str());
 	sf::Text temphelp(temp, arial, 20);
 
@@ -131,10 +132,17 @@ void Engine::render()
 	}
 	for (int i = 0; i < enemyShip.size(); i++) {
 		enemyShip[i].draw(window);
+		std::ostringstream dbgnfo;
+		dbgnfo << "HP: " << enemyShip[i].hp << "\nLV: " << enemyShip[i].enemyLvl;
+		sf::String tmp(dbgnfo.str());
+		sf::Text dbgnfotxt(tmp, arial, 20);
+		dbgnfotxt.setPosition(enemyShip[i].position);
+		window.draw(dbgnfotxt);
 	}
 	window.draw(temphelp);
 	window.display();
 }
+
 bool Engine::canSpawn(int lastTick, int Tick) {
 	if (Tick - lastTick > 20) return true;
 	else return false;

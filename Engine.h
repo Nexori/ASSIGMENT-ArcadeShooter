@@ -10,10 +10,7 @@
 #include <fstream>
 #include <sstream>
 #include <cstdio>
-
-
-#include "Enemy.h"
-#include "Projectile.h"
+#include "Animation.h"
 using namespace sf;
 using namespace std;
 
@@ -28,13 +25,14 @@ public:
 	Engine();
 	void run();
 	bool canSpawn(int lastTick, int Tick);
-	void spawnProjectile(Ship &ship);
+	void shootProjectile(Ship &ship);
 	void spawnEnemy();
+	Animation animation;
 	sf::Clock clock;
 	sf::Font arial;
 
 	int tick;
-	int lastShootTick;
+	int lastAnimationTick;
 	int lastSpawnTick;
 	double dt;
 private:

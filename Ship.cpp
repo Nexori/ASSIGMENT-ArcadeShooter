@@ -2,13 +2,15 @@
 
 Ship::Ship()
 {
+	lastShootTick = 0;
 	fireRate = 300;
 	hp = 100;
 	damage = 25;
 	speedVec = sf::Vector2f(0, 0);
 	position = sf::Vector2f(WINX/4,WINY/2);
-	shape = sf::CircleShape(25);
-	shape.setFillColor(sf::Color::Red);
+	shape.setRadius(32);
+	shape.setOrigin(shape.getRadius(), shape.getRadius());
+	shape.setFillColor(sf::Color(0,255,0,100));
 }
 Ship::~Ship()
 {
@@ -16,6 +18,24 @@ Ship::~Ship()
 bool Ship::canShoot(int lastTick, int Tick) {
 	if (Tick - lastTick > 3600/fireRate) return true;
 	else return false;
+}
+
+void Ship::spawnProjectile(Ship ship, int tick, sf::Vector2f offsetA, sf::Vector2f offsetB , bool forced, std::vector<Projectile> &projectileList)
+{
+	if (ship.canShoot(lastShootTick, tick) == true || forced == true)
+	{
+		if (offsetB.x == 0 && offsetB.y == 0) {
+			lastShootTick = tick;
+			projectileList.push_back(Projectile(ship.position, ship.speedVec, ship.damage, offsetA));
+		}
+		if (offsetB.x != 0 || offsetB.y != 0) {
+			lastShootTick = tick;
+			projectileList.push_back(Projectile(ship.position, ship.speedVec, ship.damage, offsetA));
+			projectileList.push_back(Projectile(ship.position, ship.speedVec, ship.damage, offsetB));
+		}
+
+	}
+	else std::cout << "\n[DEBUG] Can't shoot, cooldown";
 }
 
 void Ship::update(float dt)

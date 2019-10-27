@@ -1,15 +1,16 @@
 #include "Enemy.h"
 Enemy::Enemy()
 {
+	movementDirection = sf::Vector2f(0, 0);
 	fireRate = 10;
 	damage = 25;
-	speedVec = sf::Vector2f(-(300 + std::rand()%1000), 0);
-	enemyLvl = (1 - speedVec.x / 1300)*10;
-	hp = enemyLvl * 5;
+	speedVec = sf::Vector2f(-(200 + std::rand()%300), 0);
+	enemyLvl = (1-abs(speedVec.x) / 1300)*10;
+	hp = enemyLvl* 20;
 	position = sf::Vector2f(WINX + 200, std::rand()%WINY);
-	shape = sf::CircleShape(30);
+	shape.setRadius(36);
 	shape.setOrigin(shape.getRadius(), shape.getRadius());
-	shape.setFillColor(sf::Color::Green);
+	shape.setFillColor(sf::Color(255,0,0,100));
 };
 void Enemy::updateEnemy(float dt) {
 

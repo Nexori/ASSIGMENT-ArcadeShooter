@@ -3,8 +3,9 @@ Projectile::Projectile() {
 	damage = 0;
 }
 
-Projectile::Projectile(sf::Vector2f playerPos, sf::Vector2f playerSpeed, float damage) {
-	position = playerPos;
+Projectile::Projectile(sf::Vector2f playerPos, sf::Vector2f playerSpeed, float damage, sf::Vector2f offset) {
+	this->offset = offset;
+	position = playerPos + offset;
 	speedVec = playerSpeed;
 	speedVec.x = speedVec.x + 2000;
 	shape.setRadius(5); shape.setFillColor(sf::Color::Cyan); shape.setPosition(position);
@@ -12,12 +13,9 @@ Projectile::Projectile(sf::Vector2f playerPos, sf::Vector2f playerSpeed, float d
 	this->damage = damage;
 	std::cout << "\n[DEBUG]Projectile constructor position\n Position:";
 	std::cout << playerPos.x<< " || " << playerPos.y << 
-		"\nSpeed :" << playerSpeed.x << " || " << playerSpeed.y << std::endl;
+		"\nSpeed :" << playerSpeed.x << " || " << playerSpeed.y << "\nOffset:" << offset.x << " || " << offset.y;
 }
 
-Projectile::~Projectile() {
-
-}
 
 void Projectile::updateProjectile(float dt)
 {
