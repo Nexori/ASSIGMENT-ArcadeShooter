@@ -34,6 +34,7 @@ public:
 	int tick;
 	int lastAnimationTick;
 	int lastSpawnTick;
+	double slowMotion;
 	double dt;
 private:
 	sf::RenderWindow window;

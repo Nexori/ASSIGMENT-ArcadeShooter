@@ -8,15 +8,18 @@ class Projectile
 {
 public:
 	Projectile();
-	Projectile(sf::Vector2f playerPos, sf::Vector2f playerSpeed, float damage, Vector2f offset);
+	Projectile(sf::Vector2f playerPos, sf::Vector2f playerSpeed, float damage, Vector2f offset, int projectileOwner, int order);
 	~Projectile() {};
 	//Position
 	sf::Vector2f offset;
 	sf::Vector2f position;
 	sf::Vector2f speedVec;
 	//Render
-	sf::CircleShape shape;
+	sf::IntRect renderRect;
+	sf::Sprite projectileSprite;
+	sf::CircleShape collisionBox;
 	//Variable
+	int projectileOwner; //0 - player, 1 - enemy
 	float damage;
 	//Methods
 	void updateProjectile(float dt);

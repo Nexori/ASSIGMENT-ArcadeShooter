@@ -17,6 +17,7 @@ public:
 	~Animation() {};
 	vector<Frame> frameVector;
 	sf::Texture textureAtlas;
+	void initialize(Ship& player, vector<Enemy>& enemyShips, vector<Projectile>& bullets);
 	void update(double time,Ship &player, vector<Enemy> &enemyShips, vector<Projectile> &bullets);
 	void addFrame(Frame& frame);
 		

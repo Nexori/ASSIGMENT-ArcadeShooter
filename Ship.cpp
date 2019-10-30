@@ -2,15 +2,20 @@
 
 Ship::Ship()
 {
+	shipType = 0;
 	lastShootTick = 0;
 	fireRate = 300;
 	hp = 100;
 	damage = 25;
 	speedVec = sf::Vector2f(0, 0);
 	position = sf::Vector2f(WINX/4,WINY/2);
-	shape.setRadius(32);
-	shape.setOrigin(shape.getRadius(), shape.getRadius());
-	shape.setFillColor(sf::Color(0,255,0,100));
+	collisionBox.setRadius(25);
+	collisionBox.setOrigin(collisionBox.getRadius()/2, collisionBox.getRadius()/2);
+	collisionBox.setFillColor(sf::Color(0,255,0,100));
+	renderRect = sf::IntRect(416,151,79,34);
+	shipSprite.setTextureRect(renderRect);
+	shipSprite.setOrigin(32, 15);
+	shipSprite.setScale(sf::Vector2f(1.5, 1.5));
 }
 Ship::~Ship()
 {
@@ -26,12 +31,12 @@ void Ship::spawnProjectile(Ship ship, int tick, sf::Vector2f offsetA, sf::Vector
 	{
 		if (offsetB.x == 0 && offsetB.y == 0) {
 			lastShootTick = tick;
-			projectileList.push_back(Projectile(ship.position, ship.speedVec, ship.damage, offsetA));
+			projectileList.push_back(Projectile(ship.position, ship.speedVec, ship.damage, offsetA,shipType,0));
 		}
 		if (offsetB.x != 0 || offsetB.y != 0) {
 			lastShootTick = tick;
-			projectileList.push_back(Projectile(ship.position, ship.speedVec, ship.damage, offsetA));
-			projectileList.push_back(Projectile(ship.position, ship.speedVec, ship.damage, offsetB));
+			projectileList.push_back(Projectile(ship.position, ship.speedVec, ship.damage, offsetA,shipType,0));
+			projectileList.push_back(Projectile(ship.position, ship.speedVec, ship.damage, offsetB,shipType,1));
 		}
 
 	}
@@ -56,9 +61,12 @@ void Ship::update(float dt)
 	this->position.y = this->position.y + this->speedVec.y * dt;
 	this->speedVec.x *= 0.85;
 	this->speedVec.y *= 0.85;
-	this->shape.setPosition(position);
+	this->collisionBox.setPosition(position);
+	shipSprite.setPosition(position.x-30,position.y+2);
 }
 void Ship::draw(sf::RenderWindow& window)
 {
-	window.draw(shape);
+
+	window.draw(shipSprite);
+	window.draw(collisionBox);
 }

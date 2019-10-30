@@ -3,7 +3,6 @@
 #include <SFML/Main.hpp>
 #include "Constants.h"
 #include "Projectile.h"
-
 class Ship
 {
 public:
@@ -14,8 +13,11 @@ public:
 	sf::Vector2f position;
 	sf::Vector2f speedVec;
 		//Render
-	sf::CircleShape shape;
+	sf::IntRect renderRect;
+	sf::Sprite shipSprite;
+	sf::CircleShape collisionBox;
 		//Variables
+	int shipType; // 0 - player, 1 - enemy
 	int lastShootTick;
 	float fireRate;
 	float hp;
