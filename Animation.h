@@ -5,21 +5,20 @@
 #include "Enemy.h"
 using namespace std;
 using namespace sf;
-struct Frame
-{
-	sf::IntRect state;
-	double timeTick;
-};
+
 class Animation
 {
 public:
+	//int frameIndex;
 	Animation();
 	~Animation() {};
-	vector<Frame> frameVector;
 	sf::Texture textureAtlas;
+	double elapsedTime;
 	void initialize(Ship& player, vector<Enemy>& enemyShips, vector<Projectile>& bullets);
-	void update(double time,Ship &player, vector<Enemy> &enemyShips, vector<Projectile> &bullets);
-	void addFrame(Frame& frame);
+	void update(Clock time,Ship &player, vector<Enemy> &enemyShips, vector<Projectile> &bullets);
+	void updatePlayer(Ship& player);
+	void updateEnemy(Enemy& player);
+	void updateProjectile(Projectile& projectile);
 		
 };
 

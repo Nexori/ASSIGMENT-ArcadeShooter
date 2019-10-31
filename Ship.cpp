@@ -2,6 +2,7 @@
 
 Ship::Ship()
 {
+	frameState = 0;
 	shipType = 0;
 	lastShootTick = 0;
 	fireRate = 300;
@@ -12,9 +13,9 @@ Ship::Ship()
 	collisionBox.setRadius(25);
 	collisionBox.setOrigin(collisionBox.getRadius()/2, collisionBox.getRadius()/2);
 	collisionBox.setFillColor(sf::Color(0,255,0,100));
-	renderRect = sf::IntRect(416,151,79,34);
+	renderRect = sf::IntRect(416, 151, 104, 34);
 	shipSprite.setTextureRect(renderRect);
-	shipSprite.setOrigin(32, 15);
+	shipSprite.setOrigin(60, 15);
 	shipSprite.setScale(sf::Vector2f(1.5, 1.5));
 }
 Ship::~Ship()
@@ -29,16 +30,8 @@ void Ship::spawnProjectile(Ship ship, int tick, sf::Vector2f offsetA, sf::Vector
 {
 	if (ship.canShoot(lastShootTick, tick) == true || forced == true)
 	{
-		if (offsetB.x == 0 && offsetB.y == 0) {
 			lastShootTick = tick;
-			projectileList.push_back(Projectile(ship.position, ship.speedVec, ship.damage, offsetA,shipType,0));
-		}
-		if (offsetB.x != 0 || offsetB.y != 0) {
-			lastShootTick = tick;
-			projectileList.push_back(Projectile(ship.position, ship.speedVec, ship.damage, offsetA,shipType,0));
-			projectileList.push_back(Projectile(ship.position, ship.speedVec, ship.damage, offsetB,shipType,1));
-		}
-
+			projectileList.push_back(Projectile(ship.position, ship.speedVec, ship.damage, offsetA , shipType));
 	}
 	else std::cout << "\n[DEBUG] Can't shoot, cooldown";
 }
@@ -68,5 +61,5 @@ void Ship::draw(sf::RenderWindow& window)
 {
 
 	window.draw(shipSprite);
-	window.draw(collisionBox);
+	//window.draw(collisionBox);
 }

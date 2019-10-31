@@ -13,6 +13,8 @@ public:
 	sf::Vector2f position;
 	sf::Vector2f speedVec;
 		//Render
+	double frameState;
+	sf::Clock animClock;
 	sf::IntRect renderRect;
 	sf::Sprite shipSprite;
 	sf::CircleShape collisionBox;

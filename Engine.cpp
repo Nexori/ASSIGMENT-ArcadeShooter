@@ -13,13 +13,14 @@ Engine::Engine() : window(sf::VideoMode(WINX,WINY),"Arcade Space Game")
 	player.collisionBox.setOrigin(40, 20);
 	animation.textureAtlas.loadFromFile("textures.png");
 	animation.initialize(player, enemyShip, projectileList);
+	player.frameState = animClock.getElapsedTime().asSeconds();
 }
 
 void Engine::run()
 {
 	while (window.isOpen())
 	{
-		dt = clock.restart().asSeconds();
+		dt = dtclock.restart().asSeconds();
 		processEvents();
 		update(dt/slowMotion);
 		render();
@@ -41,9 +42,8 @@ void Engine::spawnEnemy() {
 void Engine::shootProjectile(Ship& ship) {
 	if (ship.canShoot(ship.lastShootTick, tick)) 
 	{
-		ship.spawnProjectile(ship, tick, sf::Vector2f(0, -3), sf::Vector2f(0, 13), false, projectileList);
+		ship.spawnProjectile(ship, tick, sf::Vector2f(0,5), sf::Vector2f(0, 0), false, projectileList);
 		projectileList[projectileList.size()-1].projectileSprite.setTexture(animation.textureAtlas);
-		projectileList[projectileList.size()-2].projectileSprite.setTexture(animation.textureAtlas);
 	}
 }
 
@@ -95,7 +95,7 @@ void Engine::processEvents()
 void Engine::update(float dt)
 {
 	player.update(dt);
-	animation.update(dt, player , enemyShip, projectileList);
+	
 
 	//Trash removal
 	for (int i = 0; i < projectileList.size(); i++) {
@@ -126,19 +126,30 @@ void Engine::update(float dt)
 			 dist = std::sqrt(((bx - ax) * (bx - ax) + (by - ay) * (by - ay)));
 			 if (r1 + r2 >= dist) {
 				 enemyShip[i].hp = enemyShip[i].hp - projectileList[j].damage;
-				 projectileList.erase(projectileList.begin() + j);
+					 projectileList[i].state = 2; ///THROWS VECTOR OUT OF RANGE, FIX IT LATER
+				// projectileList.erase(projectileList.begin() + j);
 				 if (enemyShip[i].hp <= 0) {
 					 enemyShip.erase(enemyShip.begin() + i);
 				 }
+				 
 			 }
 		}
 	}
+
+
+	//Animation update
+	animation.update(animClock, player, enemyShip, projectileList);
 }
 
 void Engine::render()
 {
 	std::ostringstream test;
-	test << "FPS: " << 1 / dt << "\nSpeedvec:" << player.speedVec.x << "  |  " << player.speedVec.y << "\nSimspeed: " << 1/slowMotion << "\nCanSpawn: " << canSpawn(lastSpawnTick, tick) << "\nBullet cnt.: " << projectileList.size();
+	test << "FPS: " << 1 / dt 
+		<< "\nSpeedvec:" << player.speedVec.x << "  |  " << player.speedVec.y 
+		<< "\nSimspeed: " << 1 / slowMotion 
+		<< "\nCanSpawn: " << canSpawn(lastSpawnTick, tick) 
+		<< "\nBullet cnt.: " << projectileList.size() 
+		<< "\n PlayerRendRect:" << player.renderRect.top << " " << player.renderRect.left << " " << player.renderRect.width << " " << player.renderRect.height; ;
 	sf::String temp(test.str());
 	sf::Text temphelp(temp, arial, 20);
 

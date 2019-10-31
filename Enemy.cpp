@@ -12,7 +12,7 @@ Enemy::Enemy()
 	collisionBox.setRadius(30);
 	collisionBox.setOrigin(collisionBox.getRadius(), collisionBox.getRadius());
 	collisionBox.setFillColor(sf::Color(255, 0, 0, 100));
-	renderRect = sf::IntRect(328, 112, 110, 39);
+	renderRect = sf::IntRect(0, 112, 110, 39);
 	shipSprite.setTextureRect(renderRect);
 	shipSprite.scale(sf::Vector2f(-1, 1));
 	shipSprite.setOrigin(70, 20);

@@ -28,7 +28,8 @@ public:
 	void shootProjectile(Ship &ship);
 	void spawnEnemy();
 	Animation animation;
-	sf::Clock clock;
+	sf::Clock dtclock;
+	sf::Clock animClock;
 	sf::Font arial;
 
 	int tick;
