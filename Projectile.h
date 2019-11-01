@@ -22,8 +22,8 @@ public:
 	sf::Sprite projectileSprite;
 	sf::CircleShape collisionBox;
 	//Variable
-	int state;//0-fired,1-flying,2-impact
-	int projectileOwner; //0 - player, 1 - enemy
+	int state;				     //0-fired, 1-flying, 2-impact, 3-to removal
+	int projectileOwner;		 //0 - player, 1 - enemy
 	float damage;
 	//Methods
 	void updateProjectile(float dt);

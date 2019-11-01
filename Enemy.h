@@ -1,5 +1,6 @@
 #pragma once
 #include <random>
+#include <vector>
 #include "Ship.h"
 
 class Enemy : public Ship

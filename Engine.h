@@ -27,16 +27,18 @@ public:
 	bool canSpawn(int lastTick, int Tick);
 	void shootProjectile(Ship &ship);
 	void spawnEnemy();
+	AI ai;
 	Animation animation;
 	sf::Clock dtclock;
 	sf::Clock animClock;
 	sf::Font arial;
 
+	bool debugFlag;
 	int tick;
 	int lastAnimationTick;
 	int lastSpawnTick;
-	double slowMotion;
-	double dt;
+	float slowMotion;
+	float dt;
 private:
 	sf::RenderWindow window;
 	void processEvents();

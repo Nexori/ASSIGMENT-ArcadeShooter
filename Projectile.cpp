@@ -22,7 +22,7 @@ Projectile::Projectile(sf::Vector2f playerPos, sf::Vector2f playerSpeed, float d
 	}
 	else renderRect = IntRect(0, 12, 40, 40);
 	projectileSprite.setTextureRect(renderRect);
-	projectileSprite.scale(sf::Vector2f(2, 2));
+	projectileSprite.scale(sf::Vector2f(2, 1.5));
 	projectileSprite.setOrigin(sf::Vector2f(20,20));
 	
 	frameState = 0;
@@ -31,11 +31,11 @@ Projectile::Projectile(sf::Vector2f playerPos, sf::Vector2f playerSpeed, float d
 
 void Projectile::updateProjectile(float dt)
 {
-	position.x = position.x + speedVec.x * dt;
-	position.y = position.y + speedVec.y * dt;
-	speedVec.y *= 0.9;
-	collisionBox.setPosition(position);
-	projectileSprite.setPosition(position);
+	this->position.x = position.x + speedVec.x * dt;
+	this->position.y = position.y + speedVec.y * dt;
+	this->speedVec.y *= 0.9;
+	this->collisionBox.setPosition(position);
+	this->projectileSprite.setPosition(position);
 
 }
 

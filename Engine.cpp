@@ -1,8 +1,21 @@
 #include "Engine.h"
+/*
+TODO:
+[x]	RTTI dynamic_cast etc (propably not, depends if polimorphysm is implemented)
+[x]	Exceptions (texture handling)
+[x] Polymorphism (will be in GUI)
+[x] Templates? (not sure if possible here)
+[~] I/O streams (debug info uses sstream and it's commands)
+[x] Multiple inheritance (not jet, possibly in GUI)
+[v] Inheritance (Many present)
 
+General requirements:
+[v] 5<= indepentent classes requirement
+[x] 4<= ideas implemented on labs
+*/
 Engine::Engine() : window(sf::VideoMode(WINX,WINY),"Arcade Space Game")
 {
-	srand(time(NULL));
+	this->debugFlag = false;
 	this->window.setFramerateLimit(60);
 	this->dt = 0;
 	this->slowMotion = 1;
@@ -71,7 +84,7 @@ void Engine::processEvents()
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space)) {
 		shootProjectile(player);
 	}
-	//remove later
+
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::C)) {
 		spawnEnemy();
 	}
@@ -84,6 +97,18 @@ void Engine::processEvents()
 	sf::Event event;
 	while (window.pollEvent(event))
 	{
+		if (event.type == sf::Event::KeyPressed){
+			if (event.key.code == sf::Keyboard::F12) {
+				debugFlag = !debugFlag;
+				if (debugFlag) {
+					animation.textureAtlas.loadFromFile("texturesdebug.png");
+				}
+				else animation.textureAtlas.loadFromFile("textures.png");
+			}
+			if (event.key.code == sf::Keyboard::Escape) {
+				window.close();
+			}
+		}
 		if (event.type == sf::Event::Closed)
 		{
 			std::cout << "[INFO] Window closed";
@@ -95,78 +120,46 @@ void Engine::processEvents()
 void Engine::update(float dt)
 {
 	player.update(dt);
+	ai.movementUpdate(enemyShip, player, projectileList,dt);
 	
-
-	//Trash removal
-	for (int i = 0; i < projectileList.size(); i++) {
-		projectileList[i].updateProjectile(dt);
-		//Remove obsolete objects
-		if (projectileList[i].position.x > 3000 || projectileList[i].position.x 
-			< -1000 || projectileList[i].position.y> 3000 || projectileList[i].position.y < -1000) 
-		{
-			projectileList.erase(projectileList.begin()+i);
-		}
-	}
-	for (int i = 0; i < enemyShip.size(); i++){
-		enemyShip[i].Enemy::updateEnemy(dt);
-		if (enemyShip[i].position.x > 3000 || enemyShip[i].position.x
-			< -1000 || enemyShip[i].position.y> 3000 || enemyShip[i].position.y < -1000)
-		{
-			enemyShip.erase(enemyShip.begin() + i);
-		}
-	}
-
-	//Collision detection (circles)
-	for (int i = 0; i < enemyShip.size(); i++) {
-		float r1 = 0; float ax = enemyShip[i].position.x; float ay = enemyShip[i].position.y;
-		r1 = enemyShip[i].collisionBox.getRadius();
-		for (int j = 0; j < projectileList.size(); j++) {
-			float r2 = 0; float dist = 0; float bx = projectileList[j].position.x; float by = projectileList[j].position.y;
-			 r2 = projectileList[j].collisionBox.getRadius();
-			 dist = std::sqrt(((bx - ax) * (bx - ax) + (by - ay) * (by - ay)));
-			 if (r1 + r2 >= dist) {
-				 enemyShip[i].hp = enemyShip[i].hp - projectileList[j].damage;
-					 projectileList[i].state = 2; ///THROWS VECTOR OUT OF RANGE, FIX IT LATER
-				// projectileList.erase(projectileList.begin() + j);
-				 if (enemyShip[i].hp <= 0) {
-					 enemyShip.erase(enemyShip.begin() + i);
-				 }
-				 
-			 }
-		}
-	}
-
-
-	//Animation update
 	animation.update(animClock, player, enemyShip, projectileList);
 }
 
 void Engine::render()
 {
 	std::ostringstream test;
-	test << "FPS: " << 1 / dt 
-		<< "\nSpeedvec:" << player.speedVec.x << "  |  " << player.speedVec.y 
-		<< "\nSimspeed: " << 1 / slowMotion 
-		<< "\nCanSpawn: " << canSpawn(lastSpawnTick, tick) 
-		<< "\nBullet cnt.: " << projectileList.size() 
-		<< "\n PlayerRendRect:" << player.renderRect.top << " " << player.renderRect.left << " " << player.renderRect.width << " " << player.renderRect.height; ;
+		if (debugFlag) {
+			test << "DEBUG INFO:\nFPS: " << 1 / dt
+				<< "\nSpeedvec:" << player.speedVec.x << "  <>  " << player.speedVec.y
+				<< "\nSimspeed: " << 1 / slowMotion
+				<< "\nCanSpawn: " << canSpawn(lastSpawnTick, tick)
+				<< "\nBullet cnt.: " << projectileList.size()
+				<< "\nEnemies cnt.: " << enemyShip.size()
+				<< "\nPlayer animation rect:." << player.renderRect.left << "  <>  " << player.renderRect.top << "  <>  " << player.renderRect.width << "  <>  " << player.renderRect.height; ;
+		}
+		else { test << "Press F12 for debug info"; }
+
 	sf::String temp(test.str());
 	sf::Text temphelp(temp, arial, 20);
 
 	window.clear();
 	player.draw(window);
 
-	for (int i = 0; i < enemyShip.size(); i++) {
+	for (unsigned int i = 0; i < enemyShip.size(); i++) {
 		enemyShip[i].Ship::draw(window);
 		//window.draw(enemyShip[i].shipSprite);
 		std::ostringstream dbgnfo;
-		dbgnfo << "HP: " << enemyShip[i].hp << "\nLV: " << enemyShip[i].enemyLvl;
-		sf::String tmp(dbgnfo.str());
-		sf::Text dbgnfotxt(tmp, arial, 20);
-		dbgnfotxt.setPosition(enemyShip[i].position);
-		window.draw(dbgnfotxt);
+		if (debugFlag) 
+		{
+			dbgnfo << "HP: " << enemyShip[i].hp << "\nLV: " << enemyShip[i].enemyLvl;
+			sf::String tmp(dbgnfo.str());
+			sf::Text dbgnfotxt(tmp, arial, 20);
+			dbgnfotxt.setPosition(enemyShip[i].position);
+			dbgnfotxt.setColor(sf::Color::Yellow);
+			window.draw(dbgnfotxt);
+		}
 	}
-	for (int i = 0; i < projectileList.size(); i++) {
+	for (unsigned int i = 0; i < projectileList.size(); i++) {
 		projectileList[i].projectileDraw(window);
 	}
 	window.draw(temphelp);

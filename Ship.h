@@ -19,6 +19,7 @@ public:
 	sf::Sprite shipSprite;
 	sf::CircleShape collisionBox;
 		//Variables
+	sf::Clock existanceTime;
 	int shipType; // 0 - player, 1 - enemy
 	int lastShootTick;
 	float fireRate;

@@ -1,57 +1,4 @@
 #include "Animation.h"
-Animation::Animation() {
-	//textureAtlas.loadFromFile("textures.png");
-	//Initiate animation frames
-	//for (int i = 0; i < 6; i++) {
-	//	temp.state = IntRect(0+i*40, 12, 40, 40);
-	//	temp.duration = 4;
-	//	frameVector.push_back(temp);
-	//}
-	////player impact
-	//for (int i = 0; i < 5; i++) {
-	//	temp.state = IntRect(200 + i * 40, 12, 40, 40);
-	//	temp.duration = 4;
-	//	frameVector.push_back(temp);
-	//}
-	////player movement
-	//for (int i = 0; i < 6; i++) {
-	//	temp.state = IntRect(0 + i * 104, 151, 104, 34);
-	//	temp.duration = 4;
-	//	frameVector.push_back(temp);
-	//}
-	////player movement
-	//for (int i = 0; i < 4; i++) {
-	//	temp.state = IntRect(0 + i * 104, 151, 104, 34);
-	//	temp.duration = 4;
-	//	frameVector.push_back(temp);
-	//}
-	////enemy shoot
-	//for (int i = 0; i < 4; i++) {
-	//	temp.state = IntRect(0 + i * 70,60, 70, 50);
-	//	temp.duration = 4;
-	//	frameVector.push_back(temp);
-	//}
-	////enemy impact
-	//for (int i = 0; i < 5; i++) {
-	//	temp.state = IntRect(280 + i * 70, 60, 70, 50);
-	//	temp.duration = 4;
-	//	frameVector.push_back(temp);
-	//}
-	////enemy movement
-	//for (int i = 0; i < 4; i++) {
-	//	temp.state = IntRect(0 + i * 110, 112, 110, 39);
-	//	temp.duration = 4;
-	//	frameVector.push_back(temp);
-	//}
-	/*Thus 
-	Player animations:
-	0-4 player shooting, 5 player bolt, 6-10 player bolt impact, 11-14 player moving, 15-16 player idle
-
-	Enemy animations:
-	17-21 enemy shooting, 22 enemy bolt, 23-28 enemy bolt impact, 29-32 enemy moving;
-	
-	*/
-};
 void Animation::initialize(Ship& player, vector<Enemy>& enemyShips, vector<Projectile>& bullets) {
 	player.shipSprite.setTexture(textureAtlas);
 }
@@ -59,18 +6,19 @@ void Animation::update(Clock time, Ship& player, vector<Enemy>& enemyShips, vect
 {	
 
 	elapsedTime = time.getElapsedTime().asSeconds();
+	playerPos = player.position;
 	updatePlayer(player);
-	for (int i = 0; i < enemyShips.size(); i++){
+	for (unsigned int i = 0; i < enemyShips.size(); i++){
+		enemyPos = enemyShips[i].position;
 		updateEnemy(enemyShips[i]);
 	}
-	for (int i = 0; i < bullets.size(); i++) {
-		updateProjectile(bullets[i]);
-		if (bullets[i].renderRect.left >  7 * 70 && bullets[i].projectileOwner == 1) 
-			bullets.erase(bullets.cbegin()+i);
-	}
-	for (int i = 0; i < bullets.size(); i++) {
-		if (bullets[i].renderRect.left > 10 * 40 && bullets[i].projectileOwner == 0)
-			bullets.erase(bullets.cbegin() + i);
+	for (unsigned int i = 0; i < bullets.size(); i++) {
+		bulletPos = bullets[i].position;
+		updateProjectile(bullets[i], enemyShips);
+		if ((bullets[i].renderRect.left > 7 * 70 && bullets[i].projectileOwner == 1) ||
+			(bullets[i].renderRect.left > 10 * 40 && bullets[i].projectileOwner == 0))
+			bullets[i].state = 3;
+
 	}
 }
 void Animation::updatePlayer(Ship& player) {
@@ -104,7 +52,7 @@ void Animation::updateEnemy(Enemy& enemy) {
 	if (enemy.renderRect.left >= 4*110) enemy.renderRect.left = 0;
 	enemy.shipSprite.setTextureRect(enemy.renderRect);
 }
-void Animation::updateProjectile(Projectile& projectile) 
+void Animation::updateProjectile(Projectile& projectile, vector<Enemy>& enemies)
 {
 	projectile.frameState += projectile.animClock.restart().asSeconds();
 	if (projectile.projectileOwner)
@@ -139,12 +87,18 @@ void Animation::updateProjectile(Projectile& projectile)
 	else {
 
 		//Launch
-		if (projectile.state == 0 && 0.05 <= projectile.frameState)
+		if (projectile.state == 0)
 		{
-			projectile.renderRect.left += 40;
-			projectile.frameState = 0;
-			if (projectile.renderRect.left > 4 * 40)
-				projectile.state = 1;
+
+			if (0.05 <= projectile.frameState) 
+			{
+				projectile.renderRect.left += 40;
+					projectile.frameState = 0;
+					if (projectile.renderRect.left > 4 * 40)
+						projectile.state = 1;
+			}
+			projectile.position.x = playerPos.x + projectile.offset.x;
+			projectile.position.y = playerPos.y + projectile.offset.y;
 		}
 		//Flight
 		if (projectile.state == 1)
@@ -152,14 +106,18 @@ void Animation::updateProjectile(Projectile& projectile)
 			projectile.renderRect.left = 5 * 40;
 		}
 		//Impact
-		if (projectile.state == 2 && 0.05 <= projectile.frameState)
+		if (projectile.state == 2)
 		{
-			if (projectile.renderRect.left < 6 * 40) {
-				projectile.renderRect.left = 6*40;
+		if (0.05 <= projectile.frameState)
+		{
+			if (projectile.renderRect.left < 6 * 40) 
+			{
+				projectile.renderRect.left = 6 * 40;
 			}
 			projectile.renderRect.left += 40;
 			projectile.frameState = 0;
-
+		}
+			projectile.speedVec = sf::Vector2f(0, 0);
 		}
 	}
 	projectile.projectileSprite.setTextureRect(projectile.renderRect);
