@@ -1,4 +1,4 @@
-#include "Projectile.h"
+#include "Classes/Projectile.h"
 Projectile::Projectile(sf::Vector2f playerPos, sf::Vector2f playerSpeed, float damage, sf::Vector2f offset, int projectileOwner) {
 	this->offset = offset;
 	this->projectileOwner = projectileOwner;

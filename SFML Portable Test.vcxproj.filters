@@ -5,13 +5,22 @@
       <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
       <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
     </Filter>
-    <Filter Include="Header Files">
-      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
-      <Extensions>h;hh;hpp;hxx;hm;inl;inc;ipp;xsd</Extensions>
-    </Filter>
     <Filter Include="Resource Files">
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="Source Files\Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;hm;inl;inc;ipp;xsd</Extensions>
+    </Filter>
+    <Filter Include="GUI">
+      <UniqueIdentifier>{0aefd624-9ffd-4549-8192-c73a01ae0aec}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="GUI\Gheader">
+      <UniqueIdentifier>{613903b6-1985-42ee-af29-cf8c5f484bb2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="GUI\Gcpp">
+      <UniqueIdentifier>{e5f67fb1-6296-4a40-af81-f4dc144213dd}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -36,28 +45,64 @@
     <ClCompile Include="AI.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="GUI.cpp">
+      <Filter>GUI\Gcpp</Filter>
+    </ClCompile>
+    <ClCompile Include="GUI_Button.cpp">
+      <Filter>GUI\Gcpp</Filter>
+    </ClCompile>
+    <ClCompile Include="GUI_Clickable.cpp">
+      <Filter>GUI\Gcpp</Filter>
+    </ClCompile>
+    <ClCompile Include="GUI_B_Play.cpp">
+      <Filter>GUI\Gcpp</Filter>
+    </ClCompile>
+    <ClCompile Include="GUI_Menu.cpp">
+      <Filter>GUI\Gcpp</Filter>
+    </ClCompile>
+    <ClCompile Include="GUI_B_Exit.cpp">
+      <Filter>GUI\Gcpp</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Engine.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="Classes\AI.h">
+      <Filter>Source Files\Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Ship.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="Classes\Animation.h">
+      <Filter>Source Files\Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Constants.h">
+    <ClInclude Include="Classes\Enemy.h">
+      <Filter>Source Files\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Classes\Engine.h">
+      <Filter>Source Files\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Classes\Projectile.h">
+      <Filter>Source Files\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Classes\Ship.h">
+      <Filter>Source Files\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Classes\Constants.h">
       <Filter>Resource Files</Filter>
     </ClInclude>
-    <ClInclude Include="Projectile.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="GUI.h">
+      <Filter>GUI\Gheader</Filter>
     </ClInclude>
-    <ClInclude Include="Enemy.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="GUI_Button.h">
+      <Filter>GUI\Gheader</Filter>
     </ClInclude>
-    <ClInclude Include="Animation.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="GUI_Clickable.h">
+      <Filter>GUI\Gheader</Filter>
     </ClInclude>
-    <ClInclude Include="AI.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="GUI_B_Play.h">
+      <Filter>GUI\Gheader</Filter>
+    </ClInclude>
+    <ClInclude Include="GUI_Menu.h">
+      <Filter>GUI\Gheader</Filter>
+    </ClInclude>
+    <ClInclude Include="GUI_B_Exit.h">
+      <Filter>GUI\Gheader</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

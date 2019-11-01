@@ -1,4 +1,4 @@
-#include "Animation.h"
+#include "Classes/Animation.h"
 void Animation::initialize(Ship& player, vector<Enemy>& enemyShips, vector<Projectile>& bullets) {
 	player.shipSprite.setTexture(textureAtlas);
 }

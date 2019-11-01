@@ -14,6 +14,7 @@ private:
 	sf::Vector2f bulletPos;
 public:
 	Animation() { 
+		elapsedTime = 0;
 		playerPos = sf::Vector2f(0, 0);
 		enemyPos = sf::Vector2f(0, 0);
 		bulletPos = sf::Vector2f(0, 0);

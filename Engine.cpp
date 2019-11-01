@@ -1,30 +1,38 @@
-#include "Engine.h"
+#include "Classes/Engine.h"
 /*
 TODO:
 [x]	RTTI dynamic_cast etc (propably not, depends if polimorphysm is implemented)
-[x]	Exceptions (texture handling)
-[x] Polymorphism (will be in GUI)
-[x] Templates? (not sure if possible here)
-[~] I/O streams (debug info uses sstream and it's commands)
-[x] Multiple inheritance (not jet, possibly in GUI)
+[~]	Exceptions (textures load error handling) /// partially done, need to implement other ships so there will be more textures
+[~] Polymorphism (will be in GUI and/or in additional ships)
+[x] Templates (not sure if possible/eligible in this project)
+[v] I/O streams (all debug info uses sstream and it's commands, moreover, there is lot of cout and formatting, might implement logging)
+[~] Multiple inheritance (not jet, possibly present in GUI)
 [v] Inheritance (Many present)
 
 General requirements:
 [v] 5<= indepentent classes requirement
 [x] 4<= ideas implemented on labs
 */
-Engine::Engine() : window(sf::VideoMode(WINX,WINY),"Arcade Space Game")
+sf::ContextSettings settings(0,0,16,1,1,0,false);
+Engine::Engine() : window(sf::VideoMode(WINX, WINY), "Arcade Space Game",sf::Style::Default,settings)
 {
+	settings.antialiasingLevel = 16;
 	this->debugFlag = false;
 	this->window.setFramerateLimit(60);
+	this->window.setVerticalSyncEnabled(1);
+
+	this->window.getSettings();
 	this->dt = 0;
 	this->slowMotion = 1;
-	arial.loadFromFile("arial.ttf");
+	arial.loadFromFile("Resources/arial.ttf");
 	this->tick = 0;
 	this->lastAnimationTick = 0;
 	this->lastSpawnTick = 0;
 	player.collisionBox.setOrigin(40, 20);
-	animation.textureAtlas.loadFromFile("textures.png");
+	animation.textureAtlas.loadFromFile("Resources/Textures/textures.png");
+	if (!animation.textureAtlas.loadFromFile("Resources/Textures/textures.png")) {
+		throw std::runtime_error("Failed to load Textures/textures.png");
+	}
 	animation.initialize(player, enemyShip, projectileList);
 	player.frameState = animClock.getElapsedTime().asSeconds();
 }
@@ -101,9 +109,9 @@ void Engine::processEvents()
 			if (event.key.code == sf::Keyboard::F12) {
 				debugFlag = !debugFlag;
 				if (debugFlag) {
-					animation.textureAtlas.loadFromFile("texturesdebug.png");
+					animation.textureAtlas.loadFromFile("Resource/Textures/texturesdebug.png");
 				}
-				else animation.textureAtlas.loadFromFile("textures.png");
+				else animation.textureAtlas.loadFromFile("Resource/Textures/textures.png");
 			}
 			if (event.key.code == sf::Keyboard::Escape) {
 				window.close();
@@ -119,9 +127,9 @@ void Engine::processEvents()
 
 void Engine::update(float dt)
 {
+
 	player.update(dt);
 	ai.movementUpdate(enemyShip, player, projectileList,dt);
-	
 	animation.update(animClock, player, enemyShip, projectileList);
 }
 

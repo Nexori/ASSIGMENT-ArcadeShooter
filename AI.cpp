@@ -1,4 +1,4 @@
-#include "AI.h"
+#include "Classes/AI.h"
 
 void AI::movementUpdate(vector<Enemy>& enemyShip, Ship& player, vector<Projectile>& projectileList, float dt)
 {
