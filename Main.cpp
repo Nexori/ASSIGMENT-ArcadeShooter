@@ -1,5 +1,3 @@
-////----WARNING----//
-////STICK TO x86 mode!!!
 #include "Classes/Engine.h"
 int main()
 {
